@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2811FA232F68084600E909C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2811FA222F68084600E909C2 /* Assets.xcassets */; };
 		28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A62F67109100B4D060 /* SettingsView.swift */; };
 		28D559AC2F67109100B4D060 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599C2F67109100B4D060 /* TabItem.swift */; };
 		28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A12F67109100B4D060 /* MarkdownToNotion.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		2811FA0D2F6795CB00E909C2 /* nTabulaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nTabulaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2811FA222F68084600E909C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		28D559842F67106F00B4D060 /* nTabula.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nTabula.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D559922F67109100B4D060 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		28D559932F67109100B4D060 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 		28D559962F67109100B4D060 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2811FA222F68084600E909C2 /* Assets.xcassets */,
 				28D559942F67109100B4D060 /* Info.plist */,
 				28D559952F67109100B4D060 /* nTabula.entitlements */,
 			);
@@ -169,7 +172,7 @@
 				28D559A52F67109100B4D060 /* MainWindowView.swift */,
 				28D559A62F67109100B4D060 /* SettingsView.swift */,
 				28D559A72F67109100B4D060 /* TabBarView.swift */,
-				28D559A82F67109100B4D060 /* VerticalSidebarView.swift */,
+					28D559A82F67109100B4D060 /* VerticalSidebarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 			files = (
 				28D559B92F67109100B4D060 /* CLAUDE.md in Resources */,
 				28D559BA2F67109100B4D060 /* README.md in Resources */,
+				2811FA232F68084600E909C2 /* Assets.xcassets in Resources */,
 				28D559BB2F67109100B4D060 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -313,7 +317,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */,
+					28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */,
 				28D559AC2F67109100B4D060 /* TabItem.swift in Sources */,
 				28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */,
 				28D559AE2F67109100B4D060 /* AppState.swift in Sources */,
@@ -385,7 +389,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -449,7 +453,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -506,6 +510,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Resources/nTabula.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -541,6 +546,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Resources/nTabula.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
