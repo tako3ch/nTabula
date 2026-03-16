@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 // Sendable クロージャ内で observer を自己参照するためのラッパー
 // nonisolated(unsafe) はローカル変数に適用不可のため final class + @unchecked Sendable を使用
