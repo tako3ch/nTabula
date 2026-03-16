@@ -86,6 +86,15 @@ struct MainWindowView: View {
             // DB 切り替えメニュー
             dbSelectorMenu
 
+            // 文字数・行数カウント
+            if let tab = appState.activeTab {
+                let charCount = tab.content.count
+                let lineCount = tab.content.isEmpty ? 0 : tab.content.components(separatedBy: .newlines).count
+                Text("\(lineCount) 行  \(charCount) 文字")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(.tertiary)
+            }
+
             Spacer()
 
             // 同期ステータス
