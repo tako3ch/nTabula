@@ -16,6 +16,7 @@
 		28D559B02F67109100B4D060 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A42F67109100B4D060 /* EditorView.swift */; };
 		28D559B12F67109100B4D060 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A72F67109100B4D060 /* TabBarView.swift */; };
 		28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A52F67109100B4D060 /* MainWindowView.swift */; };
+		2811FA262F68084600E909C2 /* MarkdownPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */; };
 		28D559B32F67109100B4D060 /* NotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599F2F67109100B4D060 /* NotionService.swift */; };
 		28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A22F67109100B4D060 /* PersistenceManager.swift */; };
 		28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559972F67109100B4D060 /* AppDelegate.swift */; };
@@ -60,6 +61,7 @@
 		28D559A62F67109100B4D060 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		28D559A72F67109100B4D060 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		28D559A82F67109100B4D060 /* VerticalSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalSidebarView.swift; sourceTree = "<group>"; };
+		2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewView.swift; sourceTree = "<group>"; };
 		28D559BD2F67140300B4D060 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				28D559A42F67109100B4D060 /* EditorView.swift */,
+				2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */,
 				28D559A52F67109100B4D060 /* MainWindowView.swift */,
 				28D559A62F67109100B4D060 /* SettingsView.swift */,
 				28D559A72F67109100B4D060 /* TabBarView.swift */,
@@ -325,6 +328,7 @@
 				28D559B02F67109100B4D060 /* EditorView.swift in Sources */,
 				28D559B12F67109100B4D060 /* TabBarView.swift in Sources */,
 				28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */,
+				2811FA262F68084600E909C2 /* MarkdownPreviewView.swift in Sources */,
 				28D559B32F67109100B4D060 /* NotionService.swift in Sources */,
 				28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */,
 				28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */,

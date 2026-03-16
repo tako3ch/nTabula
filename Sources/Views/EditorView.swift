@@ -53,7 +53,23 @@ struct EditorView: NSViewRepresentable {
         // updateNSView でコンテンツを強制的に再ロードさせる
         context.coordinator.currentTabID = nil
         textStorage.textView = textView  // IME 検出用
+
+        // タイトルフィールドの Enter でエディタにフォーカスを移す
+        // dismantleNSView で削除するため coordinator に保持する
+        context.coordinator.focusObserver = NotificationCenter.default.addObserver(
+            forName: .ntFocusEditor, object: nil, queue: .main
+        ) { [weak textView] _ in
+            textView?.window?.makeFirstResponder(textView)
+        }
+
         return scrollView
+    }
+
+    static func dismantleNSView(_ nsView: NSScrollView, coordinator: Coordinator) {
+        if let obs = coordinator.focusObserver {
+            NotificationCenter.default.removeObserver(obs)
+            coordinator.focusObserver = nil
+        }
     }
 
     func updateNSView(_ nsView: NSScrollView, context: Context) {
@@ -67,15 +83,9 @@ struct EditorView: NSViewRepresentable {
         }
 
         // タブが切り替わった時のみ textView.string を更新する。
-        // 同一タブ内の入力中に呼ぶと IME マーキングが破壊されるため。
+        // 同一タブ内の入力中に呼ぶと IME マーキングが破壊されカーソルがリセットされるため。
         let activeTabID = appState.activeTabID
         if context.coordinator.currentTabID != activeTabID {
-            // 同一タブへの非同期モデル更新が pending 中なら遅延させる。
-            // （makeNSView 再実行→currentTabID=nil の直後に古いモデル内容で上書きするのを防ぐ）
-            // タブが切り替わった場合（pendingTabID ≠ activeTabID）は遅延しない。
-            if context.coordinator.pendingTabID == activeTabID && context.coordinator.pendingCount > 0 {
-                return
-            }
             context.coordinator.currentTabID = activeTabID
             let newContent = appState.activeTab?.content ?? ""
             // コンテンツが変わっていなければ string を再セットしない（カーソル位置を保持）
@@ -96,6 +106,16 @@ struct EditorView: NSViewRepresentable {
            let font = NSFont(name: appState.editorFontName, size: size) {
             return font
         }
+        // PlemolJP をデフォルトフォントとして試みる（バリアント順に検索）
+        let plemolCandidates = [
+            "PlemolJP35Console-Regular",
+            "PlemolJPConsole-Regular",
+            "PlemolJP35-Regular",
+            "PlemolJP-Regular",
+        ]
+        for name in plemolCandidates {
+            if let font = NSFont(name: name, size: size) { return font }
+        }
         return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
     }
 }
@@ -109,10 +129,8 @@ extension EditorView {
         private var saveWorkItem: DispatchWorkItem?
         /// 最後に updateNSView でセットしたタブID。変化した時のみコンテンツを差し替える
         var currentTabID: UUID?
-        /// 非同期モデル更新が pending の tabID と件数。
-        /// updateNSView が古いモデル内容で NSTextView を上書きするのを防ぐ。
-        var pendingTabID: UUID? = nil
-        var pendingCount: Int = 0
+        /// ntFocusEditor observer。dismantleNSView で削除する
+        var focusObserver: (any NSObjectProtocol)?
 
         init(appState: AppState) {
             self.appState = appState
@@ -122,23 +140,9 @@ extension EditorView {
             guard let tv = notification.object as? NTTextView,
                   let tabID = appState.activeTabID else { return }
             // IME 変換中（マーキング中）はコンテンツ更新をスキップ
-            // Zed パターン: 明示的フラグ + hasMarkedText() の二重ガード
-            guard !tv.isIMEComposing && !tv.hasMarkedText() else { return }
-            // @Observable の同期再レンダリングが IME イベントチェーンを妨害しないよう
-            // 次のランループサイクルで model を更新する（Enter #1→Enter #2 の間に
-            // updateNSView が割り込まないようにする）。
-            // pending カウントで「最後の非同期更新が完了するまで updateNSView の
-            // コンテンツリセットを遅延させる」ガードを管理する。
-            let content = tv.string
-            pendingTabID = tabID
-            pendingCount += 1
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.pendingCount -= 1
-                if self.pendingCount == 0 { self.pendingTabID = nil }
-                self.appState.updateContent(content, for: tabID)
-                self.scheduleAutoSave()
-            }
+            guard !tv.hasMarkedText() else { return }
+            appState.updateContent(tv.string, for: tabID)
+            scheduleAutoSave()
         }
 
         private func scheduleAutoSave() {
@@ -158,23 +162,29 @@ extension EditorView {
 
 final class NTTextView: NSTextView {
 
-    // MARK: IME 状態管理（Zed パターン）
+    // MARK: IME 状態管理
 
-    /// IME 変換中フラグ。hasMarkedText() より細粒度で状態を追跡する。
-    /// setMarkedText で true、insertText で false にリセットされる。
-    private(set) var isIMEComposing = false
+    /// IME 確定直後フラグ。
+    /// insertText 時点で hasMarkedText() が true なら IME 確定。その直後に
+    /// insertNewline が同期呼び出しされた場合（二重改行）をブロックするために使う。
+    /// DispatchQueue.main.async で次のランループ後に自動クリアするため、
+    /// insertNewline が呼ばれなくても次の Enter で詰まらない。
+    private var justConfirmedIME = false
 
-    /// NSTextInputClient: IME 変換開始（候補ウィンドウ表示中）
-    override func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {
-        isIMEComposing = true
-        super.setMarkedText(string, selectedRange: selectedRange, replacementRange: replacementRange)
-    }
-
-    /// NSTextInputClient: テキスト確定（IME 確定 Enter #1 or 直接入力）
-    /// isIMEComposing を先にリセットし、super.insertText 内で発火する textDidChange がモデルを更新できるようにする。
+    /// NSTextInputClient: テキスト確定（IME 確定 Enter or 直接入力）
+    /// hasMarkedText() で IME 確定かどうかを判定する（isIMEComposing フラグ不要）
     override func insertText(_ string: Any, replacementRange: NSRange) {
-        isIMEComposing = false
+        let wasComposing = hasMarkedText()
         super.insertText(string, replacementRange: replacementRange)
+        if wasComposing {
+            justConfirmedIME = true
+            // 同じランループ内で insertNewline が呼ばれなかった場合（IME が Enter を
+            // 消費して insertNewline を発行しないケース）は次の Runloop でクリアする。
+            // これにより「次の Enter が2回必要」バグを防ぐ。
+            DispatchQueue.main.async { [weak self] in
+                self?.justConfirmedIME = false
+            }
+        }
     }
 
     override func keyDown(with event: NSEvent) {
@@ -185,15 +195,61 @@ final class NTTextView: NSTextView {
         super.keyDown(with: event)
     }
 
-    // insertNewline は IME が Enter を消費しない（純粋な改行挿入）場合のみ呼ばれる。
-    // keyDown と異なり、日本語確定の Enter とは自動的に区別されるため IME 問題が起きない。
     override func insertNewline(_ sender: Any?) {
+        // IME 確定直後に呼ばれた場合は二重改行なのでスキップ
+        if justConfirmedIME {
+            justConfirmedIME = false
+            return
+        }
         guard !currentModifierFlags.contains(.shift) else {
             super.insertNewline(sender)
             return
         }
+        if handleSlashCommand() { return }
         if handleListContinuation() { return }
         super.insertNewline(sender)
+    }
+
+    /// Shift+Tab: 行頭のインデント（スペース最大4文字 or タブ1文字）を削除
+    override func insertBacktab(_ sender: Any?) {
+        let cursor = selectedRange()
+        let nsString = string as NSString
+        let lineRange = nsString.lineRange(for: NSRange(location: cursor.location, length: 0))
+        let line = nsString.substring(with: lineRange)
+
+        var charsToRemove = 0
+        for ch in line {
+            if ch == "\t" { charsToRemove = 1; break }
+            else if ch == " " { charsToRemove += 1; if charsToRemove == 4 { break } }
+            else { break }
+        }
+        guard charsToRemove > 0 else { return }
+
+        let removeRange = NSRange(location: lineRange.location, length: charsToRemove)
+        insertText("", replacementRange: removeRange)
+        let newLoc = max(lineRange.location, cursor.location - charsToRemove)
+        setSelectedRange(NSRange(location: newLoc, length: 0))
+    }
+
+    /// 現在行がスラッシュコマンドなら展開して true を返す
+    private func handleSlashCommand() -> Bool {
+        let cursor = selectedRange()
+        let nsString = string as NSString
+        let lineRange = nsString.lineRange(for: NSRange(location: cursor.location, length: 0))
+        let line = nsString.substring(with: lineRange)
+        let trimmed = line.hasSuffix("\n") ? String(line.dropLast()) : line
+
+        switch trimmed {
+        case "/table":
+            let table = "| 列1 | 列2 | 列3 |\n| --- | --- | --- |\n|  |  |  |"
+            // 行全体をテーブルで置き換える
+            let replaceRange = NSRange(location: lineRange.location,
+                                      length: lineRange.length - (line.hasSuffix("\n") ? 1 : 0))
+            insertText(table, replacementRange: replaceRange)
+            return true
+        default:
+            return false
+        }
     }
 
     // insertNewline 内で Shift キーを判定するために使用
@@ -316,9 +372,9 @@ final class MarkdownTextStorage: NSTextStorage {
         // ベーススタイルにリセット
         storage.setAttributes(baseAttrs(), range: range)
 
-        // 行ごとのハイライト
-        (string as NSString).enumerateSubstrings(in: range, options: [.byLines, .substringNotRequired]) { [weak self] _, lineRange, _, _ in
-            self?.highlightLine(lineRange)
+        // 行ごとのハイライト（enumerateSubstrings は同期実行なので循環参照なし）
+        (string as NSString).enumerateSubstrings(in: range, options: [.byLines, .substringNotRequired]) { [self] _, lineRange, _, _ in
+            highlightLine(lineRange)
         }
 
         // インラインハイライト（bold, code, link など）
@@ -360,31 +416,38 @@ final class MarkdownTextStorage: NSTextStorage {
         }
     }
 
+    // インラインパターン用のコンパイル済み正規表現（毎回生成せずキャッシュ）
+    private enum InlineRegex {
+        static let bold          = try! NSRegularExpression(pattern: #"\*\*([^*\n]+)\*\*"#)
+        static let code          = try! NSRegularExpression(pattern: #"`([^`\n]+)`"#)
+        static let link          = try! NSRegularExpression(pattern: #"\[[^\]\n]+\]\([^)\n]+\)"#)
+        static let strikethrough = try! NSRegularExpression(pattern: #"~~([^~\n]+)~~"#)
+    }
+
     private func applyInlineHighlighting(in range: NSRange) {
         // Bold **text**
-        applyPattern(#"\*\*([^*\n]+)\*\*"#, in: range,
+        applyPattern(InlineRegex.bold, in: range,
                      attrs: [.font: NSFont.boldSystemFont(ofSize: editorFont.pointSize)])
 
         // Inline code `text`
-        applyPattern(#"`([^`\n]+)`"#, in: range, attrs: [
+        applyPattern(InlineRegex.code, in: range, attrs: [
             .foregroundColor: NSColor.systemOrange,
             .font: editorFont
         ])
 
         // Links [text](url)
-        applyPattern(#"\[[^\]\n]+\]\([^)\n]+\)"#, in: range,
+        applyPattern(InlineRegex.link, in: range,
                      attrs: [.foregroundColor: NSColor.systemBlue])
 
         // Strikethrough ~~text~~
-        applyPattern(#"~~([^~\n]+)~~"#, in: range, attrs: [
+        applyPattern(InlineRegex.strikethrough, in: range, attrs: [
             .strikethroughStyle: NSUnderlineStyle.single.rawValue,
             .foregroundColor: NSColor.secondaryLabelColor
         ])
     }
 
-    private func applyPattern(_ pattern: String, in range: NSRange,
+    private func applyPattern(_ regex: NSRegularExpression, in range: NSRange,
                                attrs: [NSAttributedString.Key: Any]) {
-        guard let regex = try? NSRegularExpression(pattern: pattern) else { return }
         let str = string as NSString
         let substring = str.substring(with: range)
         let matches = regex.matches(in: substring, range: NSRange(substring.startIndex..., in: substring))
@@ -414,4 +477,6 @@ final class MarkdownTextStorage: NSTextStorage {
 
 extension Notification.Name {
     static let ntSaveDocument = Notification.Name("nTabula.saveDocument")
+    static let ntFocusEditor  = Notification.Name("nTabula.focusEditor")
+    static let ntSwitchTab    = Notification.Name("nTabula.switchTab")
 }
