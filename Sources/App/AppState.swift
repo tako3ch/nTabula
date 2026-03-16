@@ -32,6 +32,7 @@ final class AppState {
     var autoSaveEnabled: Bool = true
     var editorFontSize: CGFloat = 14
     var editorFontName: String = ""
+    var isPreviewVisible: Bool = false
 
     // MARK: - Notion Service
 
@@ -112,9 +113,19 @@ final class AppState {
         saveTabs()
     }
 
+    // MARK: - Recently Closed Tabs
+
+    /// 最近閉じたタブのスタック（最大10件）。Cmd+Shift+N で復元できる。
+    private(set) var recentlyClosedTabs: [TabItem] = []
+
+    var canRestoreTab: Bool { !recentlyClosedTabs.isEmpty }
+
     func closeTab(_ tab: TabItem) {
         guard !tab.isPinned else { return }
         let idx = tabs.firstIndex(of: tab)
+        // 最近閉じたタブに追加（最大10件）
+        recentlyClosedTabs.append(tab)
+        if recentlyClosedTabs.count > 10 { recentlyClosedTabs.removeFirst() }
         tabs.removeAll { $0.id == tab.id }
         if activeTabID == tab.id {
             if let idx {
@@ -124,6 +135,13 @@ final class AppState {
                 activeTabID = tabs.last?.id
             }
         }
+        saveTabs()
+    }
+
+    func restoreLastClosedTab() {
+        guard let tab = recentlyClosedTabs.popLast() else { return }
+        tabs.append(tab)
+        activeTabID = tab.id
         saveTabs()
     }
 
@@ -137,6 +155,23 @@ final class AppState {
     func togglePin(_ tab: TabItem) {
         guard let idx = tabs.firstIndex(of: tab) else { return }
         tabs[idx].isPinned.toggle()
+        saveTabs()
+    }
+
+    /// sortedTabs の index 番目のタブに切り替える（0-based）
+    func switchToTab(at index: Int) {
+        guard index < sortedTabs.count else { return }
+        activeTabID = sortedTabs[index].id
+    }
+
+    /// ピン留め状態が同じタブ間でのみ並び替えを許可する
+    func moveTab(from sourceID: UUID, to destinationID: UUID) {
+        guard sourceID != destinationID,
+              let srcIdx = tabs.firstIndex(where: { $0.id == sourceID }),
+              let dstIdx = tabs.firstIndex(where: { $0.id == destinationID }),
+              tabs[srcIdx].isPinned == tabs[dstIdx].isPinned
+        else { return }
+        tabs.move(fromOffsets: IndexSet(integer: srcIdx), toOffset: dstIdx > srcIdx ? dstIdx + 1 : dstIdx)
         saveTabs()
     }
 
@@ -172,7 +207,7 @@ final class AppState {
         syncError = nil
 
         do {
-            let blocks = MarkdownToNotion.convert(tab.content)
+            let blocks = MarkdownToNotion.convertToMarkdownBlock(tab.content)
             let title = tab.title.isEmpty ? "Untitled" : tab.title
             let page: NotionPage
             let usedTitlePropertyName: String
