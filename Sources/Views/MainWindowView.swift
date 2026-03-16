@@ -25,8 +25,7 @@ struct MainWindowView: View {
         VStack(spacing: 0) {
             TabBarView()
             titleField
-            EditorView()
-                .background(Color(.textBackgroundColor))
+            editorOrPreview
             statusBar
         }
         .toolbar { toolbarItems }
@@ -39,12 +38,22 @@ struct MainWindowView: View {
             Divider()
             VStack(spacing: 0) {
                 titleField
-                EditorView()
-                    .background(Color(.textBackgroundColor))
+                editorOrPreview
                 statusBar
             }
         }
         .toolbar { toolbarItems }
+    }
+
+    @ViewBuilder
+    private var editorOrPreview: some View {
+        if appState.isPreviewVisible {
+            MarkdownPreviewView(markdown: appState.activeTab?.content ?? "")
+                .background(Color(.textBackgroundColor))
+        } else {
+            EditorView()
+                .background(Color(.textBackgroundColor))
+        }
     }
 
     private var titleField: some View {
@@ -59,6 +68,9 @@ struct MainWindowView: View {
                 }
             )
         )
+        .onSubmit {
+            NotificationCenter.default.post(name: .ntFocusEditor, object: nil)
+        }
         .textFieldStyle(.plain)
         .font(.system(size: 18, weight: .semibold))
         .padding(.horizontal, 28)
@@ -110,41 +122,67 @@ struct MainWindowView: View {
 
     @ViewBuilder
     private var dbSelectorMenu: some View {
-        if let db = appState.selectedDatabase {
-            Menu {
-                ForEach(appState.databases) { database in
-                    Button(database.displayTitle) {
-                        appState.selectedDatabaseID = database.id
-                        PersistenceManager.shared.saveSelectedDatabaseID(database.id)
+        switch appState.notionSaveTarget {
+        case .database:
+            if let db = appState.selectedDatabase {
+                Menu {
+                    ForEach(appState.databases) { database in
+                        Button(database.displayTitle) {
+                            appState.selectedDatabaseID = database.id
+                            PersistenceManager.shared.saveSelectedDatabaseID(database.id)
+                        }
+                    }
+                    Divider()
+                    Button("設定を開く") { openSettings() }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 7))
+                            .foregroundStyle(.green)
+                        Text(db.displayTitle)
+                            .font(.system(size: 11))
                     }
                 }
-                Divider()
-                Button("設定を開く") { openSettings() }
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "circle.fill")
-                        .font(.system(size: 7))
-                        .foregroundStyle(.green)
-                    Text(db.displayTitle)
-                        .font(.system(size: 11))
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+            } else {
+                Button { openSettings() } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 7))
+                            .foregroundStyle(.secondary)
+                        Text("未接続 — 設定を開く")
+                            .font(.system(size: 11))
+                    }
                 }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
             }
-            .menuStyle(.borderlessButton)
-            .fixedSize()
-        } else {
-            Button {
-                openSettings()
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "circle.fill")
-                        .font(.system(size: 7))
-                        .foregroundStyle(.secondary)
-                    Text("未接続 — 設定を開く")
-                        .font(.system(size: 11))
+        case .page:
+            if let page = appState.pages.first(where: { $0.id == appState.selectedParentPageID }) {
+                Button { openSettings() } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 7))
+                            .foregroundStyle(.green)
+                        Text(page.displayTitle)
+                            .font(.system(size: 11))
+                    }
                 }
+                .buttonStyle(.plain)
+            } else {
+                Button { openSettings() } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 7))
+                            .foregroundStyle(.secondary)
+                        Text("未接続 — 設定を開く")
+                            .font(.system(size: 11))
+                    }
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
             }
-            .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
         }
     }
 

@@ -69,11 +69,20 @@ struct VerticalSidebarView: View {
                         .scaleEffect(0.6)
                         .frame(width: 16, height: 16)
                 }
-                if let db = appState.selectedDatabase {
+                if appState.notionSaveTarget == .database, let db = appState.selectedDatabase {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 6))
                         .foregroundStyle(.green)
                     Text(db.displayTitle)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                } else if appState.notionSaveTarget == .page,
+                          let page = appState.pages.first(where: { $0.id == appState.selectedParentPageID }) {
+                    Image(systemName: "circle.fill")
+                        .font(.system(size: 6))
+                        .foregroundStyle(.green)
+                    Text(page.displayTitle)
                         .font(.system(size: 10))
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)
