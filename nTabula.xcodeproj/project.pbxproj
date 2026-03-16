@@ -6,11 +6,67 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A62F67109100B4D060 /* SettingsView.swift */; };
+		28D559AC2F67109100B4D060 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599C2F67109100B4D060 /* TabItem.swift */; };
+		28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A12F67109100B4D060 /* MarkdownToNotion.swift */; };
+		28D559AE2F67109100B4D060 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559982F67109100B4D060 /* AppState.swift */; };
+		28D559AF2F67109100B4D060 /* VerticalSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A82F67109100B4D060 /* VerticalSidebarView.swift */; };
+		28D559B02F67109100B4D060 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A42F67109100B4D060 /* EditorView.swift */; };
+		28D559B12F67109100B4D060 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A72F67109100B4D060 /* TabBarView.swift */; };
+		28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A52F67109100B4D060 /* MainWindowView.swift */; };
+		28D559B32F67109100B4D060 /* NotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599F2F67109100B4D060 /* NotionService.swift */; };
+		28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A22F67109100B4D060 /* PersistenceManager.swift */; };
+		28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559972F67109100B4D060 /* AppDelegate.swift */; };
+		28D559B62F67109100B4D060 /* HotKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599E2F67109100B4D060 /* HotKeyService.swift */; };
+		28D559B72F67109100B4D060 /* nTabulaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559992F67109100B4D060 /* nTabulaApp.swift */; };
+		28D559B82F67109100B4D060 /* NotionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599B2F67109100B4D060 /* NotionModels.swift */; };
+		28D559B92F67109100B4D060 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 28D559922F67109100B4D060 /* CLAUDE.md */; };
+		28D559BA2F67109100B4D060 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 28D559932F67109100B4D060 /* README.md */; };
+		28D559BB2F67109100B4D060 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28D559942F67109100B4D060 /* Info.plist */; };
+		28D559BE2F67140300B4D060 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D559BD2F67140300B4D060 /* Carbon.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2811FA112F6795CB00E909C2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28D5597C2F67106F00B4D060 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28D559832F67106F00B4D060;
+			remoteInfo = nTabula;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		2811FA0D2F6795CB00E909C2 /* nTabulaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nTabulaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D559842F67106F00B4D060 /* nTabula.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nTabula.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28D559922F67109100B4D060 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		28D559932F67109100B4D060 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		28D559942F67109100B4D060 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		28D559952F67109100B4D060 /* nTabula.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = nTabula.entitlements; sourceTree = "<group>"; };
+		28D559972F67109100B4D060 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		28D559982F67109100B4D060 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		28D559992F67109100B4D060 /* nTabulaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nTabulaApp.swift; sourceTree = "<group>"; };
+		28D5599B2F67109100B4D060 /* NotionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionModels.swift; sourceTree = "<group>"; };
+		28D5599C2F67109100B4D060 /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
+		28D5599E2F67109100B4D060 /* HotKeyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyService.swift; sourceTree = "<group>"; };
+		28D5599F2F67109100B4D060 /* NotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionService.swift; sourceTree = "<group>"; };
+		28D559A12F67109100B4D060 /* MarkdownToNotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToNotion.swift; sourceTree = "<group>"; };
+		28D559A22F67109100B4D060 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
+		28D559A42F67109100B4D060 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		28D559A52F67109100B4D060 /* MainWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowView.swift; sourceTree = "<group>"; };
+		28D559A62F67109100B4D060 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		28D559A72F67109100B4D060 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		28D559A82F67109100B4D060 /* VerticalSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalSidebarView.swift; sourceTree = "<group>"; };
+		28D559BD2F67140300B4D060 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		2811FA0E2F6795CB00E909C2 /* nTabulaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = nTabulaTests;
+			sourceTree = "<group>";
+		};
 		28D559862F67106F00B4D060 /* nTabula */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = nTabula;
@@ -19,10 +75,18 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2811FA0A2F6795CB00E909C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		28D559812F67106F00B4D060 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28D559BE2F67140300B4D060 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,7 +97,13 @@
 			isa = PBXGroup;
 			children = (
 				28D559862F67106F00B4D060 /* nTabula */,
+				2811FA0E2F6795CB00E909C2 /* nTabulaTests */,
 				28D559852F67106F00B4D060 /* Products */,
+				28D559922F67109100B4D060 /* CLAUDE.md */,
+				28D559932F67109100B4D060 /* README.md */,
+				28D559962F67109100B4D060 /* Resources */,
+				28D559AA2F67109100B4D060 /* Sources */,
+				28D559BC2F67140300B4D060 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,13 +111,115 @@
 			isa = PBXGroup;
 			children = (
 				28D559842F67106F00B4D060 /* nTabula.app */,
+				2811FA0D2F6795CB00E909C2 /* nTabulaTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		28D559962F67109100B4D060 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				28D559942F67109100B4D060 /* Info.plist */,
+				28D559952F67109100B4D060 /* nTabula.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		28D5599A2F67109100B4D060 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				28D559972F67109100B4D060 /* AppDelegate.swift */,
+				28D559982F67109100B4D060 /* AppState.swift */,
+				28D559992F67109100B4D060 /* nTabulaApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		28D5599D2F67109100B4D060 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				28D5599B2F67109100B4D060 /* NotionModels.swift */,
+				28D5599C2F67109100B4D060 /* TabItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		28D559A02F67109100B4D060 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				28D5599E2F67109100B4D060 /* HotKeyService.swift */,
+				28D5599F2F67109100B4D060 /* NotionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		28D559A32F67109100B4D060 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				28D559A12F67109100B4D060 /* MarkdownToNotion.swift */,
+				28D559A22F67109100B4D060 /* PersistenceManager.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		28D559A92F67109100B4D060 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				28D559A42F67109100B4D060 /* EditorView.swift */,
+				28D559A52F67109100B4D060 /* MainWindowView.swift */,
+				28D559A62F67109100B4D060 /* SettingsView.swift */,
+				28D559A72F67109100B4D060 /* TabBarView.swift */,
+				28D559A82F67109100B4D060 /* VerticalSidebarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		28D559AA2F67109100B4D060 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				28D5599A2F67109100B4D060 /* App */,
+				28D5599D2F67109100B4D060 /* Models */,
+				28D559A02F67109100B4D060 /* Services */,
+				28D559A32F67109100B4D060 /* Utilities */,
+				28D559A92F67109100B4D060 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		28D559BC2F67140300B4D060 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28D559BD2F67140300B4D060 /* Carbon.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2811FA0C2F6795CB00E909C2 /* nTabulaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2811FA152F6795CB00E909C2 /* Build configuration list for PBXNativeTarget "nTabulaTests" */;
+			buildPhases = (
+				2811FA092F6795CB00E909C2 /* Sources */,
+				2811FA0A2F6795CB00E909C2 /* Frameworks */,
+				2811FA0B2F6795CB00E909C2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2811FA122F6795CB00E909C2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2811FA0E2F6795CB00E909C2 /* nTabulaTests */,
+			);
+			name = nTabulaTests;
+			packageProductDependencies = (
+			);
+			productName = nTabulaTests;
+			productReference = 2811FA0D2F6795CB00E909C2 /* nTabulaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		28D559832F67106F00B4D060 /* nTabula */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28D5598F2F67107000B4D060 /* Build configuration list for PBXNativeTarget "nTabula" */;
@@ -80,6 +252,10 @@
 				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
+					2811FA0C2F6795CB00E909C2 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 28D559832F67106F00B4D060;
+					};
 					28D559832F67106F00B4D060 = {
 						CreatedOnToolsVersion = 26.3;
 					};
@@ -100,31 +276,111 @@
 			projectRoot = "";
 			targets = (
 				28D559832F67106F00B4D060 /* nTabula */,
+				2811FA0C2F6795CB00E909C2 /* nTabulaTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		28D559822F67106F00B4D060 /* Resources */ = {
+		2811FA0B2F6795CB00E909C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28D559822F67106F00B4D060 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D559B92F67109100B4D060 /* CLAUDE.md in Resources */,
+				28D559BA2F67109100B4D060 /* README.md in Resources */,
+				28D559BB2F67109100B4D060 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		28D559802F67106F00B4D060 /* Sources */ = {
+		2811FA092F6795CB00E909C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28D559802F67106F00B4D060 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */,
+				28D559AC2F67109100B4D060 /* TabItem.swift in Sources */,
+				28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */,
+				28D559AE2F67109100B4D060 /* AppState.swift in Sources */,
+				28D559AF2F67109100B4D060 /* VerticalSidebarView.swift in Sources */,
+				28D559B02F67109100B4D060 /* EditorView.swift in Sources */,
+				28D559B12F67109100B4D060 /* TabBarView.swift in Sources */,
+				28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */,
+				28D559B32F67109100B4D060 /* NotionService.swift in Sources */,
+				28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */,
+				28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */,
+				28D559B62F67109100B4D060 /* HotKeyService.swift in Sources */,
+				28D559B72F67109100B4D060 /* nTabulaApp.swift in Sources */,
+				28D559B82F67109100B4D060 /* NotionModels.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		2811FA122F6795CB00E909C2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28D559832F67106F00B4D060 /* nTabula */;
+			targetProxy = 2811FA112F6795CB00E909C2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		2811FA132F6795CB00E909C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95U36FYLHZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.umi.design.nTabulaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nTabula.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/nTabula";
+			};
+			name = Debug;
+		};
+		2811FA142F6795CB00E909C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95U36FYLHZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.umi.design.nTabulaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nTabula.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/nTabula";
+			};
+			name = Release;
+		};
 		28D5598D2F67107000B4D060 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -250,6 +506,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/nTabula.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -259,11 +516,13 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.umi.design.nTabula;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -282,6 +541,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/nTabula.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -291,11 +551,13 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.umi.design.nTabula;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -312,6 +574,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2811FA152F6795CB00E909C2 /* Build configuration list for PBXNativeTarget "nTabulaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2811FA132F6795CB00E909C2 /* Debug */,
+				2811FA142F6795CB00E909C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		28D5597F2F67106F00B4D060 /* Build configuration list for PBXProject "nTabula" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

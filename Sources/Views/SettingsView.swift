@@ -1,0 +1,208 @@
+import SwiftUI
+import AppKit
+
+struct SettingsView: View {
+    @Environment(AppState.self) private var appState
+    @State private var tokenInput: String = ""
+    @State private var isLoadingDBs = false
+    @State private var isLoadingPages = false
+    @State private var dbError: String? = nil
+    @State private var pagesError: String? = nil
+
+    var body: some View {
+        @Bindable var state = appState
+
+        TabView {
+            // MARK: 一般設定
+            Form {
+                Section("エディタ") {
+                    Picker("フォント", selection: $state.editorFontName) {
+                        Text("SF Mono（デフォルト）").tag("")
+                        Divider()
+                        ForEach(monospacedFonts, id: \.self) { name in
+                            Text(name).tag(name)
+                        }
+                    }
+
+                    HStack {
+                        Text("フォントサイズ")
+                        Slider(value: $state.editorFontSize, in: 10...28, step: 1)
+                            .onChange(of: appState.editorFontSize) {
+                                PersistenceManager.shared.saveFontSize(appState.editorFontSize)
+                            }
+                        Text("\(Int(appState.editorFontSize))pt")
+                            .monospacedDigit()
+                            .frame(width: 36, alignment: .trailing)
+                    }
+                }
+
+                Section("タブ") {
+                    Picker("レイアウト", selection: $state.tabLayoutMode) {
+                        ForEach(TabLayoutMode.allCases, id: \.self) { mode in
+                            Text(mode.label).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: appState.tabLayoutMode) {
+                        PersistenceManager.shared.saveTabLayoutMode(appState.tabLayoutMode)
+                    }
+                }
+
+                Section("保存") {
+                    Toggle("自動保存（入力後 3 秒）", isOn: $state.autoSaveEnabled)
+                        .onChange(of: appState.autoSaveEnabled) {
+                            PersistenceManager.shared.saveAutoSaveEnabled(appState.autoSaveEnabled)
+                        }
+                }
+            }
+            .formStyle(.grouped)
+            .tabItem { Label("一般", systemImage: "gear") }
+
+            // MARK: Notion 設定
+            Form {
+                Section("Notion 接続") {
+                    SecureField("Integration Token", text: $tokenInput)
+                        .font(.system(.body, design: .monospaced))
+
+                    HStack {
+                        Button("保存して接続") {
+                            appState.updateNotionToken(tokenInput)
+                            Task { await loadDatabases() }
+                        }
+                        .disabled(tokenInput.isEmpty)
+
+                        Spacer()
+
+                        Link("Token を取得",
+                             destination: URL(string: "https://www.notion.so/my-integrations")!)
+                            .font(.footnote)
+                    }
+                }
+
+                Section("保存先") {
+                    Picker("タイプ", selection: Binding(
+                        get: { appState.notionSaveTarget },
+                        set: {
+                            appState.notionSaveTarget = $0
+                            PersistenceManager.shared.saveNotionSaveTarget($0)
+                        }
+                    )) {
+                        Text("データベース").tag(NotionSaveTarget.database)
+                        Text("ページ（子ページ）").tag(NotionSaveTarget.page)
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                if appState.notionSaveTarget == .database {
+                    Section("データベース") {
+                        if isLoadingDBs {
+                            HStack {
+                                ProgressView().scaleEffect(0.8)
+                                Text("読み込み中...").foregroundStyle(.secondary)
+                            }
+                        } else if appState.databases.isEmpty {
+                            Text("データベースが見つかりません")
+                                .foregroundStyle(.secondary)
+                            Button("再読み込み") {
+                                Task { await loadDatabases() }
+                            }
+                            .disabled(appState.notionToken.isEmpty)
+                        } else {
+                            Picker("接続先 DB", selection: Binding(
+                                get: { appState.selectedDatabaseID },
+                                set: {
+                                    appState.selectedDatabaseID = $0
+                                    PersistenceManager.shared.saveSelectedDatabaseID($0)
+                                }
+                            )) {
+                                Text("未選択").tag("")
+                                ForEach(appState.databases) { db in
+                                    Text(db.displayTitle).tag(db.id)
+                                }
+                            }
+                        }
+
+                        if let err = dbError {
+                            Text(err)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
+                    }
+                } else {
+                    Section("親ページ") {
+                        if isLoadingPages {
+                            HStack {
+                                ProgressView().scaleEffect(0.8)
+                                Text("読み込み中...").foregroundStyle(.secondary)
+                            }
+                        } else if appState.pages.isEmpty {
+                            Text("ページが見つかりません")
+                                .foregroundStyle(.secondary)
+                            Button("ページ一覧を取得") {
+                                Task { await loadPages() }
+                            }
+                            .disabled(appState.notionToken.isEmpty)
+                        } else {
+                            Picker("親ページ", selection: Binding(
+                                get: { appState.selectedParentPageID },
+                                set: {
+                                    appState.selectedParentPageID = $0
+                                    PersistenceManager.shared.saveSelectedParentPageID($0)
+                                }
+                            )) {
+                                Text("未選択").tag("")
+                                ForEach(appState.pages) { page in
+                                    Text(page.displayTitle).tag(page.id)
+                                }
+                            }
+                            Button("再読み込み") {
+                                Task { await loadPages() }
+                            }
+                            .font(.footnote)
+                        }
+
+                        if let err = pagesError {
+                            Text(err)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
+            }
+            .formStyle(.grouped)
+            .tabItem { Label("Notion", systemImage: "doc.richtext") }
+            .onAppear {
+                tokenInput = appState.notionToken
+                if appState.databases.isEmpty && !appState.notionToken.isEmpty {
+                    Task { await loadDatabases() }
+                }
+            }
+        }
+        .frame(width: 500, height: 400)
+    }
+
+    private func loadDatabases() async {
+        isLoadingDBs = true
+        dbError = nil
+        await appState.fetchDatabases()
+        if let err = appState.syncError { dbError = err }
+        isLoadingDBs = false
+    }
+
+    private func loadPages() async {
+        isLoadingPages = true
+        pagesError = nil
+        defer { isLoadingPages = false }
+        await appState.fetchPages()
+        if let err = appState.syncError { pagesError = err }
+    }
+
+    private var monospacedFonts: [String] {
+        NSFontManager.shared.availableFontFamilies
+            .filter { name in
+                guard let font = NSFont(name: name, size: 12) else { return false }
+                return font.isFixedPitch
+            }
+            .sorted()
+    }
+}
