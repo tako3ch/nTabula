@@ -67,7 +67,7 @@ struct nTabulaApp: App {
                     NotificationCenter.default.post(name: .ntSaveDocument, object: nil)
                 }
                 .keyboardShortcut("s", modifiers: .command)
-                .disabled(appState.selectedDatabaseID.isEmpty)
+                .disabled(!appState.hasValidSaveTarget)
 
                 Button("Markdown としてエクスポート...") {
                     exportActiveTab(appState)
