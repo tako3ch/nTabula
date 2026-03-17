@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>nTabula</title>
+        <item>
+            <title>v1.0.0</title>
+            <pubDate>Mon, 01 Jan 2026 00:00:00 +0000</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure
+                url="https://github.com/tako3ch/nTabula/releases/download/v1.0.0/nTabula.dmg"
+                length="0"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_SIGNATURE"/>
+        </item>
+    </channel>
+</rss>

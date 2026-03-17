@@ -1,86 +1,110 @@
 # nTabula
 
-Notion にマークダウンを保存できる macOS メモアプリ。
+A macOS markdown editor that saves notes directly to Notion.
 
-## 必要環境
+> 日本語版は [README.ja.md](README.ja.md) を参照してください。
 
-- macOS 14.0 (Sonoma) 以上
-- Xcode 15 以上
+![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Swift](https://img.shields.io/badge/swift-5.9-orange)
 
-## Xcode プロジェクトのセットアップ
+## Features
 
-### 1. プロジェクト作成
+- **Markdown editor** with syntax highlighting (headings, bold, italic, code, links, etc.)
+- **Tabbed interface** — horizontal or vertical (Arc-style) tab layout
+- **Pin tabs** — pinned tabs persist across restarts
+- **Save to Notion** — converts Markdown to Notion blocks automatically
+- **Auto-save** — saves locally 3 seconds after typing stops
+- **Global hotkey** — `Ctrl+Shift+N` to show/hide the window from anywhere
+- **Window state memory** — remembers size and position
+- **Dark / Light mode** support
+
+## Requirements
+
+- macOS 14.0 (Sonoma) or later
+- Xcode 15 or later (to build from source)
+- A [Notion Integration Token](https://www.notion.so/my-integrations)
+
+## Download
+
+Download the latest `.dmg` from the [Releases](../../releases) page.
+
+## Build from Source
+
+### 1. Create Xcode Project
 
 1. Xcode → File → New → Project
-2. **macOS > App** を選択
-3. 設定:
+2. Select **macOS > App**
+3. Configure:
    - Product Name: `nTabula`
    - Bundle Identifier: `jp.umi.design.nTabula`
    - Interface: `SwiftUI`
    - Language: `Swift`
    - Use Core Data: OFF / Include Tests: OFF
 
-### 2. ソースファイルの追加
+### 2. Add Source Files
 
-自動生成された `ContentView.swift` と `Assets.xcassets` を削除後、`Sources/` 以下のファイルをすべて追加。
+Delete the auto-generated `ContentView.swift` and `Assets.xcassets`, then add all files under `Sources/`:
 
 ```
-Sources/App/      → nTabulaApp.swift, AppDelegate.swift, AppState.swift
-Sources/Models/   → TabItem.swift, NotionModels.swift
-Sources/Services/ → NotionService.swift, HotKeyService.swift
-Sources/Views/    → MainWindowView.swift, EditorView.swift, TabBarView.swift,
-                    VerticalSidebarView.swift, SettingsView.swift
-Sources/Utilities/→ MarkdownToNotion.swift, PersistenceManager.swift
+Sources/App/       → nTabulaApp.swift, AppDelegate.swift, AppState.swift
+Sources/Models/    → TabItem.swift, NotionModels.swift
+Sources/Services/  → NotionService.swift, HotKeyService.swift
+Sources/Views/     → MainWindowView.swift, EditorView.swift, TabBarView.swift,
+                     VerticalSidebarView.swift, SettingsView.swift
+Sources/Utilities/ → MarkdownToNotion.swift, PersistenceManager.swift
 ```
 
-### 3. Info.plist の差し替え
+### 3. Configure Info.plist
 
-- Target → Build Settings → `Info.plist File` を `Resources/Info.plist` に変更
-- または自動生成 Info.plist に同等の設定を追加
+- Target → Build Settings → set `Info.plist File` to `Resources/Info.plist`
 
-### 4. Entitlements の設定
+### 4. Configure Entitlements
 
-- Target → Signing & Capabilities → Capability を追加
-  - **App Sandbox**（自動で .entitlements が生成される）
-  - **Outgoing Connections (Client)**（Network: Client を ON）
-- 既存 .entitlements を `Resources/nTabula.entitlements` の内容で上書き、またはターゲットの Entitlements File に `Resources/nTabula.entitlements` を指定
+- Target → Signing & Capabilities → Add:
+  - **App Sandbox**
+  - **Outgoing Connections (Client)**
+- Set Entitlements File to `Resources/nTabula.entitlements`
 
-### 5. Carbon.framework の追加
+### 5. Add Carbon.framework
 
-- Target → General → Frameworks, Libraries → `+`
-- `Carbon.framework` を検索して追加
+- Target → General → Frameworks, Libraries → `+` → search `Carbon.framework`
 
-### 6. Deployment Target
+### 6. Set Deployment Target
 
 - Target → General → Minimum Deployments: **macOS 14.0**
 
-### 7. ビルドと実行
+### 7. Build and Run
 
 ```
-Cmd+R で起動
+Cmd+R
 ```
 
-## Notion Integration Token の取得
+## Notion Setup
 
-1. [Notion Integrations](https://www.notion.so/my-integrations) にアクセス
-2. 「新しいインテグレーション」を作成
-3. 使用したいデータベースのページ → 「接続」→ 作成したインテグレーションを追加
-4. アプリの設定画面でトークンを入力
+1. Go to [Notion Integrations](https://www.notion.so/my-integrations)
+2. Create a new integration
+3. Open your Notion database → Connect to the integration
+4. Enter the Integration Token in nTabula's Settings
 
-## キーボードショートカット
+## Keyboard Shortcuts
 
-| ショートカット | 動作 |
+| Shortcut | Action |
 |---|---|
-| `Ctrl+Shift+N` | アプリ起動 / フォーカス切り替え（グローバル） |
-| `Cmd+S` | Notion に保存 |
-| `Cmd+T` | 新規タブ |
+| `Ctrl+Shift+N` | Show / hide window (global) |
+| `Cmd+S` | Save to Notion |
+| `Cmd+T` | New tab |
 
-## 機能
+## Tech Stack
 
-- マークダウンシンタックスハイライト（見出し/太字/コード/リンクなど）
-- タブ式エディタ（横タブ / 縦タブ切り替え）
-- ピン留めタブ（再起動後も保持）
-- Notion データベースへの保存（マークダウンを Notion ブロックに変換）
-- 自動保存（入力後 3 秒、ローカルのみ）
-- ウィンドウサイズ・位置の記憶
-- ダーク / ライトモード対応
+- Swift / SwiftUI + AppKit (macOS 14+)
+- Notion REST API (Integration Token auth)
+- No external dependencies
+
+## License
+
+MIT — see [LICENSE](LICENSE)
+
+## Author
+
+[umi.design](https://umi.design)

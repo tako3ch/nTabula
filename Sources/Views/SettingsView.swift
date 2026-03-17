@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Sparkle
 
 struct SettingsView: View {
     @Environment(AppState.self) private var appState
@@ -9,10 +10,18 @@ struct SettingsView: View {
     @State private var dbError: String? = nil
     @State private var pagesError: String? = nil
 
+    private var updater: SPUUpdater {
+        (NSApp.delegate as! AppDelegate).updaterController.updater
+    }
+
     var body: some View {
         @Bindable var state = appState
 
         TabView {
+            // MARK: アップデート
+            UpdateSettingsTab(updater: updater)
+                .tabItem { Label("アップデート", systemImage: "arrow.down.circle") }
+
             // MARK: 一般設定
             Form {
                 Section("エディタ") {
@@ -216,7 +225,7 @@ struct SettingsView: View {
             }
             .tabItem { Label("ショートカット", systemImage: "keyboard") }
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 500, height: 440)
     }
 
     private func loadDatabases() async {
@@ -242,6 +251,44 @@ struct SettingsView: View {
                 return font.isFixedPitch
             }
             .sorted()
+    }
+}
+
+// MARK: - UpdateSettingsTab
+
+private struct UpdateSettingsTab: View {
+    @ObservedObject var updater: SPUUpdater
+
+    var body: some View {
+        Form {
+            Section {
+                CheckForUpdatesView(updater: updater)
+
+                Toggle("自動的にアップデートを確認", isOn: Binding(
+                    get: { updater.automaticallyChecksForUpdates },
+                    set: { updater.automaticallyChecksForUpdates = $0 }
+                ))
+
+                Toggle("統計情報を送信（匿名）", isOn: Binding(
+                    get: { updater.sendsSystemProfile },
+                    set: { updater.sendsSystemProfile = $0 }
+                ))
+            }
+
+            Section {
+                LabeledContent("現在のバージョン") {
+                    Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-")
+                        .foregroundStyle(.secondary)
+                }
+                if let lastCheck = updater.lastUpdateCheckDate {
+                    LabeledContent("最後に確認した日時") {
+                        Text(lastCheck, style: .relative)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        .formStyle(.grouped)
     }
 }
 

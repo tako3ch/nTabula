@@ -26,6 +26,13 @@
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 umi.design. All rights reserved.</string>
+    <!-- Sparkle 自動アップデート -->
+    <key>SUFeedURL</key>
+    <string>https://tako3ch.github.io/nTabula/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>rxYJG4tCCTjsro95/zsWsoMoxL39+TVGaSJmuj7JdEU=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
     <!-- Markdown ファイルの関連付け（将来用） -->
     <key>CFBundleDocumentTypes</key>
     <array>
