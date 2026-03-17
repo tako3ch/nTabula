@@ -2,18 +2,27 @@
 build/
 DerivedData/
 *.xcarchive
-
-# リリース成果物
-dist/
-*.xcuserdata
+*.xcworkspace/xcuserdata/
 xcuserdata/
+*.xcuserstate
+*.xcscheme
+
+# ビルド設定
 *.pbxuser
 *.mode1v3
 *.mode2v3
 *.perspectivev3
 
+# リリース成果物
+dist/
+
+# Swift
+.build/
+
 # macOS
 .DS_Store
+.Spotlight-V100
+.Trashes
 
 # Claude Code（個人設定）
 .claude/
@@ -23,3 +32,7 @@ coderabbit-review.txt
 
 # デザインデータ（バイナリ）
 *.psd
+
+# 内部ドキュメント（タスク管理・設計メモ）
+docs/tasks/
+docs/design/
