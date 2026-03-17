@@ -90,6 +90,39 @@ Entitlements:      Resources/nTabula.entitlements
 ### 設定ウィンドウを開く
 `SettingsLink { }` を使う。`NSApp.sendAction(Selector(("showSettingsWindow:")))` は非推奨。
 
+## Git ブランチ運用
+
+### 基本ルール
+- **main には直接コミットしない**。作業は必ずブランチで行う
+- 作業完了後は `git merge --no-ff` で main へマージする
+
+### ブランチ命名規則
+
+| プレフィックス | 用途 | 例 |
+|---|---|---|
+| `feat/` | 新機能追加 | `feat/markdown-export` |
+| `fix/` | バグ修正 | `fix/ime-cursor-jump` |
+| `docs/` | ドキュメント | `docs/api-spec` |
+| `test/` | テスト追加・修正 | `test/notion-service` |
+| `chore/` | 設定・ビルド・依存変更 | `chore/gitignore` |
+| `refactor/` | リファクタリング | `refactor/tab-state` |
+
+### 作業フロー
+
+```bash
+# 1. ブランチを切る（main から）
+git checkout main
+git checkout -b feat/xxx   # または fix/xxx, docs/xxx ...
+
+# 2. 実装・コミット
+git add <files>
+git commit -m "feat: ..."
+
+# 3. main へマージ
+git checkout main
+git merge --no-ff feat/xxx -m "Merge branch 'feat/xxx'"
+```
+
 ## Notion API メモ
 
 ```

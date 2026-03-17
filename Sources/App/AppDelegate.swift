@@ -1,9 +1,16 @@
 import AppKit
 import SwiftUI
+import Sparkle
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var appState: AppState?
     private let hotKeyService = HotKeyService()
+    // Sparkle: standard updater controller（retain が必要）
+    let updaterController = SPUStandardUpdaterController(
+        startingUpdater: true,
+        updaterDelegate: nil,
+        userDriverDelegate: nil
+    )
 
     // MARK: - Lifecycle
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Developer ID 配布（Mac App Store 外） -->
+    <key>method</key>
+    <string>developer-id</string>
+    <key>teamID</key>
+    <string>95U36FYLHZ</string>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>signingCertificate</key>
+    <string>Developer ID Application: UMI.DESIGN LIMITED LIABILITY COMPANY (95U36FYLHZ)</string>
+    <!-- 公証に必要な Hardened Runtime を有効化 -->
+    <key>hardened-runtime</key>
+    <true/>
+    <key>stripSwiftSymbols</key>
+    <true/>
+</dict>
+</plist>

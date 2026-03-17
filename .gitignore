@@ -2,6 +2,9 @@
 build/
 DerivedData/
 *.xcarchive
+
+# リリース成果物
+dist/
 *.xcuserdata
 xcuserdata/
 *.pbxuser

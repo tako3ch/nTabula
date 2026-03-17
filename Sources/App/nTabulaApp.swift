@@ -48,6 +48,10 @@ struct nTabulaApp: App {
                 }
                 .keyboardShortcut("p", modifiers: .command)
             }
+            // アップデートを確認
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(updater: appDelegate.updaterController.updater)
+            }
             // 設定（Cmd+,）
             CommandGroup(replacing: .appSettings) {
                 SettingsLink {
