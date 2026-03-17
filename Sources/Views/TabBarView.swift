@@ -59,16 +59,18 @@ struct TabItemButton: View {
     @State private var isHovering = false
 
     private var isActive: Bool { appState.activeTabID == tab.id }
+    // AppState から常に最新値を取得する（TabItem.== は id のみ比較のため SwiftUI が再描画をスキップする問題を回避）
+    private var currentTab: TabItem { appState.tabs.first(where: { $0.id == tab.id }) ?? tab }
 
     var body: some View {
         HStack(spacing: 4) {
-            if tab.isPinned {
+            if currentTab.isPinned {
                 Image(systemName: "pin.fill")
                     .font(.system(size: 8))
                     .foregroundStyle(.tertiary)
             }
 
-            Text(tab.title)
+            Text(currentTab.title)
                 .font(.system(size: 12))
                 .lineLimit(1)
                 .truncationMode(.tail)
@@ -76,13 +78,13 @@ struct TabItemButton: View {
 
             // 未保存インジケーター / 閉じるボタン
             ZStack {
-                if tab.isDirty {
+                if currentTab.isDirty {
                     Circle()
                         .fill(Color.accentColor)
                         .frame(width: 6, height: 6)
-                        .opacity(isHovering && !tab.isPinned ? 0 : 1)
+                        .opacity(isHovering && !currentTab.isPinned ? 0 : 1)
                 }
-                if isHovering && !tab.isPinned {
+                if isHovering && !currentTab.isPinned {
                     Button {
                         appState.closeTab(tab)
                     } label: {
@@ -107,14 +109,14 @@ struct TabItemButton: View {
         .onTapGesture { appState.activeTabID = tab.id }
         .onHover { isHovering = $0 }
         .contextMenu {
-            Button(tab.isPinned ? "ピン解除" : "ピン留め") {
+            Button(currentTab.isPinned ? "ピン解除" : "ピン留め") {
                 appState.togglePin(tab)
             }
             Divider()
             Button("タブを閉じる", role: .destructive) {
                 appState.closeTab(tab)
             }
-            .disabled(tab.isPinned)
+            .disabled(currentTab.isPinned)
         }
         .onDrag {
             NSItemProvider(object: tab.id.uuidString as NSString)
