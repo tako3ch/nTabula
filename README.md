@@ -22,63 +22,11 @@ A macOS markdown editor that saves notes directly to Notion.
 ## Requirements
 
 - macOS 14.0 (Sonoma) or later
-- Xcode 15 or later (to build from source)
 - A [Notion Integration Token](https://www.notion.so/my-integrations)
 
 ## Download
 
-Download the latest `.dmg` from the [Releases](../../releases) page.
-
-## Build from Source
-
-### 1. Create Xcode Project
-
-1. Xcode → File → New → Project
-2. Select **macOS > App**
-3. Configure:
-   - Product Name: `nTabula`
-   - Bundle Identifier: `jp.umi.design.nTabula`
-   - Interface: `SwiftUI`
-   - Language: `Swift`
-   - Use Core Data: OFF / Include Tests: OFF
-
-### 2. Add Source Files
-
-Delete the auto-generated `ContentView.swift` and `Assets.xcassets`, then add all files under `Sources/`:
-
-```
-Sources/App/       → nTabulaApp.swift, AppDelegate.swift, AppState.swift
-Sources/Models/    → TabItem.swift, NotionModels.swift
-Sources/Services/  → NotionService.swift, HotKeyService.swift
-Sources/Views/     → MainWindowView.swift, EditorView.swift, TabBarView.swift,
-                     VerticalSidebarView.swift, SettingsView.swift
-Sources/Utilities/ → MarkdownToNotion.swift, PersistenceManager.swift
-```
-
-### 3. Configure Info.plist
-
-- Target → Build Settings → set `Info.plist File` to `Resources/Info.plist`
-
-### 4. Configure Entitlements
-
-- Target → Signing & Capabilities → Add:
-  - **App Sandbox**
-  - **Outgoing Connections (Client)**
-- Set Entitlements File to `Resources/nTabula.entitlements`
-
-### 5. Add Carbon.framework
-
-- Target → General → Frameworks, Libraries → `+` → search `Carbon.framework`
-
-### 6. Set Deployment Target
-
-- Target → General → Minimum Deployments: **macOS 14.0**
-
-### 7. Build and Run
-
-```
-Cmd+R
-```
+Download the latest `.dmg` from the [Releases](../../releases) page, open it, and drag nTabula.app to your Applications folder.
 
 ## Notion Setup
 
@@ -91,9 +39,15 @@ Cmd+R
 
 | Shortcut | Action |
 |---|---|
-| `Ctrl+Shift+N` | Show / hide window (global) |
+| `Ctrl+Shift+N` | Show / hide window (global, configurable) |
 | `Cmd+S` | Save to Notion |
 | `Cmd+T` | New tab |
+| `Cmd+W` | Close tab |
+| `Cmd+Shift+T` | Restore closed tab |
+| `Cmd+P` | Toggle preview |
+| `Cmd+Shift+E` | Export as Markdown file |
+| `Cmd+,` | Open Settings |
+| `Cmd+1` … `Cmd+9` | Switch to tab by number |
 
 ## Tech Stack
 
