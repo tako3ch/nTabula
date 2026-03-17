@@ -1,0 +1,22 @@
+# Xcode ビルド成果物
+build/
+DerivedData/
+*.xcarchive
+*.xcuserdata
+xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# macOS
+.DS_Store
+
+# Claude Code（個人設定）
+.claude/
+
+# 一時ファイル
+coderabbit-review.txt
+
+# デザインデータ（バイナリ）
+*.psd
