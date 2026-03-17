@@ -100,8 +100,20 @@ echo ""
 echo "==> Release complete: $DIST_DIR"
 echo "    $APP_NAME.app"
 echo "    $APP_NAME.dmg"
+
+# 5. GitHub Release 作成 & DMG アップロード
+echo ""
+echo "==> GitHub Release を作成 (v$VERSION)"
+gh release create "v$VERSION" "$DMG_PATH" \
+  --title "v$VERSION" \
+  --notes "## nTabula v$VERSION
+
+### Download
+Download \`nTabula.dmg\` below and drag nTabula.app to your Applications folder.
+
+### Requirements
+- macOS 14.0 (Sonoma) or later"
+
 echo ""
 echo "次のステップ:"
-echo "  1. GitHub Release を作成し DMG をアップロード:"
-echo "     https://github.com/tako3ch/nTabula/releases/new?tag=v$VERSION"
-echo "  2. docs/appcast.xml を git push → GitHub Pages に反映"
+echo "  1. docs/appcast.xml を git commit & push → GitHub Pages に反映"
