@@ -1,4 +1,5 @@
 import SwiftUI
+import Sparkle
 import UniformTypeIdentifiers
 
 // Sendable クロージャ内で observer を自己参照するためのラッパー
