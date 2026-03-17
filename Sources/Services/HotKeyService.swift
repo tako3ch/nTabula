@@ -1,6 +1,33 @@
 import Carbon.HIToolbox
 
-/// Carbon の RegisterEventHotKey を使ってグローバルホットキー (Ctrl+Shift+N) を登録する
+// MARK: - GlobalHotKeyPreset
+
+/// グローバルホットキーのプリセット。Settings から変更可能。
+enum GlobalHotKeyPreset: String, CaseIterable, Codable {
+    case ctrlShiftN   // ⌃⇧N  デフォルト・他アプリと競合しにくい
+    case cmdShiftN    // ⌘⇧N  Finder・Chrome 等と競合する可能性あり
+    case ctrlOptionN  // ⌃⌥N  競合しにくい代替
+
+    var label: String {
+        switch self {
+        case .ctrlShiftN:  "⌃⇧N  (Ctrl+Shift+N)"
+        case .cmdShiftN:   "⌘⇧N  (Cmd+Shift+N)"
+        case .ctrlOptionN: "⌃⌥N  (Ctrl+Option+N)"
+        }
+    }
+
+    var modifiers: UInt32 {
+        switch self {
+        case .ctrlShiftN:  UInt32(controlKey | shiftKey)
+        case .cmdShiftN:   UInt32(cmdKey | shiftKey)
+        case .ctrlOptionN: UInt32(controlKey | optionKey)
+        }
+    }
+}
+
+// MARK: - HotKeyService
+
+/// Carbon の RegisterEventHotKey を使ってグローバルホットキーを登録する
 final class HotKeyService {
     private var hotKeyRef: EventHotKeyRef?
     private var eventHandlerRef: EventHandlerRef?
@@ -8,7 +35,7 @@ final class HotKeyService {
 
     deinit { unregister() }
 
-    func register() {
+    func register(preset: GlobalHotKeyPreset = .ctrlShiftN) {
         // グローバル参照をセット（コールバックからアクセスするため）
         globalHotKeyService = self
 
@@ -42,19 +69,24 @@ final class HotKeyService {
             nil, &eventHandlerRef
         )
 
-        // Ctrl+Shift+N を登録
         var hotKeyID = EventHotKeyID()
         hotKeyID.signature = OSType(0x6E546162) // 'nTab'
         hotKeyID.id = 1
 
         RegisterEventHotKey(
             UInt32(kVK_ANSI_N),
-            UInt32(controlKey | shiftKey),
+            preset.modifiers,
             hotKeyID,
             GetApplicationEventTarget(),
             OptionBits(0),
             &hotKeyRef
         )
+    }
+
+    /// プリセット変更時に呼ぶ（登録解除 → 再登録）
+    func reconfigure(preset: GlobalHotKeyPreset) {
+        unregister()
+        register(preset: preset)
     }
 
     func unregister() {

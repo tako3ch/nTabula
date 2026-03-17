@@ -54,6 +54,22 @@ struct SettingsView: View {
                             PersistenceManager.shared.saveAutoSaveEnabled(appState.autoSaveEnabled)
                         }
                 }
+
+                Section("グローバルホットキー") {
+                    Picker("ウィンドウ表示切り替え", selection: Binding(
+                        get: { appState.globalHotKeyPreset },
+                        set: { appState.updateHotKeyPreset($0) }
+                    )) {
+                        ForEach(GlobalHotKeyPreset.allCases, id: \.self) { preset in
+                            Text(preset.label).tag(preset)
+                        }
+                    }
+                    if appState.globalHotKeyPreset == .cmdShiftN {
+                        Label("⌘⇧N は Finder・Chrome 等のショートカットと競合する可能性があります", systemImage: "exclamationmark.triangle")
+                            .font(.footnote)
+                            .foregroundStyle(.orange)
+                    }
+                }
             }
             .formStyle(.grouped)
             .tabItem { Label("一般", systemImage: "gear") }
@@ -177,6 +193,28 @@ struct SettingsView: View {
                     Task { await loadDatabases() }
                 }
             }
+            // MARK: ショートカット一覧
+            List {
+                Section("タブ操作") {
+                    ShortcutRow(keys: "⌘T", description: "新規タブ")
+                    ShortcutRow(keys: "⌘W", description: "タブを閉じる")
+                    ShortcutRow(keys: "⌘⇧T", description: "閉じたタブを復元")
+                    ShortcutRow(keys: "⌘1〜9", description: "タブを番号で切り替え")
+                }
+                Section("ファイル") {
+                    ShortcutRow(keys: "⌘S", description: "Notion に保存")
+                    ShortcutRow(keys: "⌘⇧E", description: "Markdown としてエクスポート")
+                }
+                Section("表示") {
+                    ShortcutRow(keys: "⌘P", description: "プレビュー表示切り替え")
+                    ShortcutRow(keys: "⌘,", description: "設定を開く")
+                }
+                Section("グローバル") {
+                    ShortcutRow(keys: appState.globalHotKeyPreset.label.components(separatedBy: " ").first ?? "⌃⇧N",
+                                description: "ウィンドウ表示 / 非表示")
+                }
+            }
+            .tabItem { Label("ショートカット", systemImage: "keyboard") }
         }
         .frame(width: 500, height: 400)
     }
@@ -204,5 +242,22 @@ struct SettingsView: View {
                 return font.isFixedPitch
             }
             .sorted()
+    }
+}
+
+// MARK: - ShortcutRow
+
+private struct ShortcutRow: View {
+    let keys: String
+    let description: String
+
+    var body: some View {
+        HStack {
+            Text(description)
+            Spacer()
+            Text(keys)
+                .font(.system(.body, design: .monospaced))
+                .foregroundStyle(.secondary)
+        }
     }
 }

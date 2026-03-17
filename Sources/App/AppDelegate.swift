@@ -11,7 +11,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         hotKeyService.onHotKeyPressed = { [weak self] in
             self?.toggleMainWindow()
         }
-        hotKeyService.register()
+        let preset = PersistenceManager.shared.loadHotKeyPreset()
+        hotKeyService.register(preset: preset)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(hotKeyPresetChanged(_:)),
+            name: .ntHotKeyPresetChanged,
+            object: nil
+        )
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -38,6 +46,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     // MARK: - Hot Key
 
+    @objc private func hotKeyPresetChanged(_ notification: Notification) {
+        guard let preset = notification.object as? GlobalHotKeyPreset else { return }
+        hotKeyService.reconfigure(preset: preset)
+    }
+
     private func toggleMainWindow() {
         let windows = NSApp.windows.filter { $0.canBecomeKey }
         if let window = windows.first {
@@ -45,6 +58,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 window.orderOut(nil)
             } else {
                 NSApp.activate(ignoringOtherApps: true)
+                if window.isMiniaturized {
+                    window.deminiaturize(nil)
+                }
                 window.makeKeyAndOrderFront(nil)
             }
         } else {
