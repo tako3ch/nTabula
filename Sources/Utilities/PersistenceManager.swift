@@ -18,6 +18,7 @@ final class PersistenceManager {
         static let autoSaveEnabled = "nTabula.autoSaveEnabled"
         static let editorFontSize = "nTabula.editorFontSize"
         static let editorFontName = "nTabula.editorFontName"
+        static let hotKeyPreset   = "nTabula.hotKeyPreset"
     }
 
     // Keychain 操作はメインスレッドで呼ぶと警告が出るため専用キューで実行
@@ -221,5 +222,15 @@ final class PersistenceManager {
 
     func loadFontName() -> String {
         defaults.string(forKey: Keys.editorFontName) ?? ""
+    }
+
+    func saveHotKeyPreset(_ preset: GlobalHotKeyPreset) {
+        defaults.set(preset.rawValue, forKey: Keys.hotKeyPreset)
+    }
+
+    func loadHotKeyPreset() -> GlobalHotKeyPreset {
+        guard let raw = defaults.string(forKey: Keys.hotKeyPreset),
+              let preset = GlobalHotKeyPreset(rawValue: raw) else { return .ctrlShiftN }
+        return preset
     }
 }

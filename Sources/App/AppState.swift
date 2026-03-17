@@ -33,6 +33,7 @@ final class AppState {
     var editorFontSize: CGFloat = 14
     var editorFontName: String = ""
     var isPreviewVisible: Bool = false
+    var globalHotKeyPreset: GlobalHotKeyPreset = .ctrlShiftN
 
     // MARK: - Notion Service
 
@@ -55,6 +56,7 @@ final class AppState {
         autoSaveEnabled = pm.loadAutoSaveEnabled()
         editorFontSize = pm.loadFontSize()
         editorFontName = pm.loadFontName()
+        globalHotKeyPreset = pm.loadHotKeyPreset()
 
         if tabs.isEmpty { addNewTab() }
     }
@@ -186,6 +188,14 @@ final class AppState {
         tabs[idx].notionPageID = pageID
         tabs[idx].titlePropertyName = titlePropertyName
         saveTabs()
+    }
+
+    // MARK: - Hot Key
+
+    func updateHotKeyPreset(_ preset: GlobalHotKeyPreset) {
+        globalHotKeyPreset = preset
+        PersistenceManager.shared.saveHotKeyPreset(preset)
+        NotificationCenter.default.post(name: .ntHotKeyPresetChanged, object: preset)
     }
 
     // MARK: - Notion Token
