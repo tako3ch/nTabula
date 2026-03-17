@@ -48,17 +48,30 @@ SIGN_UPDATE=$(find "$HOME/Library/Developer/Xcode/DerivedData" \
   -path "*/Sparkle*/bin/sign_update" -maxdepth 10 2>/dev/null | head -1)
 
 if [[ -z "$SIGN_UPDATE" ]]; then
-  echo "WARNING: sign_update が見つかりません。appcast.xml の edSignature は手動で設定してください。" >&2
-else
-  echo "==> appcast.xml を更新"
+  echo "ERROR: sign_update が見つかりません。" >&2
+  echo "       Xcode でプロジェクトを一度ビルドして Sparkle の DerivedData を生成してください。" >&2
+  exit 1
+fi
 
-  DMG_LENGTH="$(stat -f %z "$DMG_PATH")"
-  ED_SIGNATURE="$("$SIGN_UPDATE" "$DMG_PATH" 2>/dev/null | grep -o 'sparkle:edSignature="[^"]*"' | cut -d'"' -f2)"
-  PUB_DATE="$(date -u '+%a, %d %b %Y %H:%M:%S +0000')"
-  ENCLOSURE_URL="$GITHUB_RELEASE_BASE/v$VERSION/$APP_NAME.dmg"
+echo "==> appcast.xml を更新"
 
-  mkdir -p "$(dirname "$APPCAST")"
-  cat > "$APPCAST" <<XML
+DMG_LENGTH="$(stat -f %z "$DMG_PATH")"
+SIGN_UPDATE_OUTPUT="$("$SIGN_UPDATE" "$DMG_PATH" 2>&1)"
+ED_SIGNATURE="$(echo "$SIGN_UPDATE_OUTPUT" | grep -o 'sparkle:edSignature="[^"]*"' | cut -d'"' -f2)"
+
+if [[ -z "$ED_SIGNATURE" ]]; then
+  echo "ERROR: sign_update による署名に失敗しました。" >&2
+  echo "       sign_update ($SIGN_UPDATE) の出力:" >&2
+  echo "$SIGN_UPDATE_OUTPUT" >&2
+  echo "       Sparkle の秘密鍵が Keychain に存在するか確認してください（generate_keys を実行）。" >&2
+  exit 1
+fi
+
+PUB_DATE="$(date -u '+%a, %d %b %Y %H:%M:%S +0000')"
+ENCLOSURE_URL="$GITHUB_RELEASE_BASE/v$VERSION/$APP_NAME.dmg"
+
+mkdir -p "$(dirname "$APPCAST")"
+cat > "$APPCAST" <<XML
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
@@ -75,14 +88,13 @@ else
 </rss>
 XML
 
-  # dist/ にも同期
-  cp "$APPCAST" "$ROOT_DIR/dist/appcast.xml"
+# dist/ にも同期
+cp "$APPCAST" "$ROOT_DIR/dist/appcast.xml"
 
-  echo "    appcast.xml 更新完了"
-  echo "    url:         $ENCLOSURE_URL"
-  echo "    length:      $DMG_LENGTH"
-  echo "    edSignature: $ED_SIGNATURE"
-fi
+echo "    appcast.xml 更新完了"
+echo "    url:         $ENCLOSURE_URL"
+echo "    length:      $DMG_LENGTH"
+echo "    edSignature: $ED_SIGNATURE"
 
 echo ""
 echo "==> Release complete: $DIST_DIR"
