@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28F97ADC2F695416008E9F16 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 28F97ADD2F695417008E9F16 /* Sparkle */; };
+		28F97ADE2F695418008E9F16 /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F97ADF2F695418008E9F16 /* CheckForUpdatesView.swift */; };
 		2811FA232F68084600E909C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2811FA222F68084600E909C2 /* Assets.xcassets */; };
+		2811FA262F68084600E909C2 /* MarkdownPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */; };
 		28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A62F67109100B4D060 /* SettingsView.swift */; };
 		28D559AC2F67109100B4D060 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599C2F67109100B4D060 /* TabItem.swift */; };
 		28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A12F67109100B4D060 /* MarkdownToNotion.swift */; };
@@ -16,7 +19,6 @@
 		28D559B02F67109100B4D060 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A42F67109100B4D060 /* EditorView.swift */; };
 		28D559B12F67109100B4D060 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A72F67109100B4D060 /* TabBarView.swift */; };
 		28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A52F67109100B4D060 /* MainWindowView.swift */; };
-		2811FA262F68084600E909C2 /* MarkdownPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */; };
 		28D559B32F67109100B4D060 /* NotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5599F2F67109100B4D060 /* NotionService.swift */; };
 		28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559A22F67109100B4D060 /* PersistenceManager.swift */; };
 		28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D559972F67109100B4D060 /* AppDelegate.swift */; };
@@ -42,6 +44,8 @@
 /* Begin PBXFileReference section */
 		2811FA0D2F6795CB00E909C2 /* nTabulaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nTabulaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2811FA222F68084600E909C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewView.swift; sourceTree = "<group>"; };
+		28F97ADF2F695418008E9F16 /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		28D559842F67106F00B4D060 /* nTabula.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nTabula.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D559922F67109100B4D060 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		28D559932F67109100B4D060 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -61,7 +65,6 @@
 		28D559A62F67109100B4D060 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		28D559A72F67109100B4D060 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		28D559A82F67109100B4D060 /* VerticalSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalSidebarView.swift; sourceTree = "<group>"; };
-		2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewView.swift; sourceTree = "<group>"; };
 		28D559BD2F67140300B4D060 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -91,6 +94,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28D559BE2F67140300B4D060 /* Carbon.framework in Frameworks */,
+				28F97ADC2F695416008E9F16 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,10 +176,11 @@
 			children = (
 				28D559A42F67109100B4D060 /* EditorView.swift */,
 				2811FA272F68084600E909C2 /* MarkdownPreviewView.swift */,
+				28F97ADF2F695418008E9F16 /* CheckForUpdatesView.swift */,
 				28D559A52F67109100B4D060 /* MainWindowView.swift */,
 				28D559A62F67109100B4D060 /* SettingsView.swift */,
 				28D559A72F67109100B4D060 /* TabBarView.swift */,
-					28D559A82F67109100B4D060 /* VerticalSidebarView.swift */,
+				28D559A82F67109100B4D060 /* VerticalSidebarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -243,6 +248,7 @@
 			);
 			name = nTabula;
 			packageProductDependencies = (
+				28F97ADD2F695417008E9F16 /* Sparkle */,
 			);
 			productName = nTabula;
 			productReference = 28D559842F67106F00B4D060 /* nTabula.app */;
@@ -276,6 +282,9 @@
 			);
 			mainGroup = 28D5597B2F67106F00B4D060;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				28F97ADB2F695415008E9F16 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 28D559852F67106F00B4D060 /* Products */;
 			projectDirPath = "";
@@ -320,7 +329,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-					28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */,
+				28D559AB2F67109100B4D060 /* SettingsView.swift in Sources */,
 				28D559AC2F67109100B4D060 /* TabItem.swift in Sources */,
 				28D559AD2F67109100B4D060 /* MarkdownToNotion.swift in Sources */,
 				28D559AE2F67109100B4D060 /* AppState.swift in Sources */,
@@ -329,6 +338,7 @@
 				28D559B12F67109100B4D060 /* TabBarView.swift in Sources */,
 				28D559B22F67109100B4D060 /* MainWindowView.swift in Sources */,
 				2811FA262F68084600E909C2 /* MarkdownPreviewView.swift in Sources */,
+				28F97ADE2F695418008E9F16 /* CheckForUpdatesView.swift in Sources */,
 				28D559B32F67109100B4D060 /* NotionService.swift in Sources */,
 				28D559B42F67109100B4D060 /* PersistenceManager.swift in Sources */,
 				28D559B52F67109100B4D060 /* AppDelegate.swift in Sources */,
@@ -612,6 +622,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		28F97ADD2F695417008E9F16 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 28F97ADB2F695415008E9F16 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		28F97ADB2F695415008E9F16 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 28D5597C2F67106F00B4D060 /* Project object */;
 }

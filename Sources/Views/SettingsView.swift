@@ -257,7 +257,7 @@ struct SettingsView: View {
 // MARK: - UpdateSettingsTab
 
 private struct UpdateSettingsTab: View {
-    @ObservedObject var updater: SPUUpdater
+    let updater: SPUUpdater
 
     var body: some View {
         Form {
