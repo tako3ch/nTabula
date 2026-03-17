@@ -210,6 +210,21 @@ final class NTTextView: NSTextView {
         super.insertNewline(sender)
     }
 
+    /// Tab: リスト行なら行頭に2スペースを挿入してインデント、それ以外は通常のタブ
+    override func insertTab(_ sender: Any?) {
+        let cursor = selectedRange()
+        let nsString = string as NSString
+        let lineRange = nsString.lineRange(for: NSRange(location: cursor.location, length: 0))
+        let line = nsString.substring(with: lineRange)
+
+        let listPrefixes = ["- [ ] ", "- [x] ", "- ", "* ", "+ "]
+        if listPrefixes.contains(where: { line.hasPrefix($0) }) {
+            insertText("  ", replacementRange: NSRange(location: lineRange.location, length: 0))
+        } else {
+            super.insertTab(sender)
+        }
+    }
+
     /// Shift+Tab: 行頭のインデント（スペース最大4文字 or タブ1文字）を削除
     override func insertBacktab(_ sender: Any?) {
         let cursor = selectedRange()
@@ -317,6 +332,8 @@ final class MarkdownTextStorage: NSTextStorage {
     var editorFont: NSFont = .monospacedSystemFont(ofSize: 14, weight: .regular)
     /// IME 検出用（makeNSView でセットする）
     weak var textView: NSTextView?
+    /// ハイライト適用中フラグ。このフラグが立っている間は setAttributes が edited を呼ばない
+    private var isApplyingHighlight = false
 
     // MARK: NSTextStorage 必須実装
 
@@ -337,19 +354,40 @@ final class MarkdownTextStorage: NSTextStorage {
     override func setAttributes(_ attrs: [NSAttributedString.Key: Any]?, range: NSRange) {
         guard range.location + range.length <= storage.length else { return }
         storage.setAttributes(attrs, range: range)
-        edited(.editedAttributes, range: range, changeInLength: 0)
+        // ハイライト適用中は edited を呼ばない。processEditing の最後にまとめて通知する
+        if !isApplyingHighlight {
+            edited(.editedAttributes, range: range, changeInLength: 0)
+        }
     }
 
     override func processEditing() {
-        let editedRange = self.editedRange
-        // IME 変換中（markedRange が有効）はハイライトをスキップしてマーキング属性を保護する
-        let isIMEActive = (textView?.markedRange().length ?? 0) > 0
-        if editedRange.location != NSNotFound && !isIMEActive {
-            let paragraphRange = (string as NSString).paragraphRange(for: editedRange)
-            applyHighlighting(in: paragraphRange)
-            // 内部ストレージへの属性変更（applyHighlighting）を NSLayoutManager へ通知する。
-            // これがないと段落全体の再描画が行われず、IME確定後の日本語テキストが不可視になる。
-            edited(.editedAttributes, range: paragraphRange, changeInLength: 0)
+        // ハイライト適用中（属性変更のみの編集セッション）は非同期ディスパッチしない
+        // → endEditing → processEditing の再帰呼び出しを防ぐ
+        if !isApplyingHighlight {
+            let capturedRange = self.editedRange
+            // IME 変換中（markedRange が有効）はスキップしてマーキング属性を保護する
+            let isIMEActive = (textView?.markedRange().length ?? 0) > 0
+            if capturedRange.location != NSNotFound && !isIMEActive {
+                // 次のランループに遅延することで:
+                // 1. IME 確定直後の中間状態を避ける
+                // 2. processEditing 内での属性変更サイクルを分離する
+                DispatchQueue.main.async { [weak self] in
+                    guard let self,
+                          (self.textView?.markedRange().length ?? 0) == 0,
+                          capturedRange.location <= self.storage.length else { return }
+                    let safeRange = NSRange(
+                        location: capturedRange.location,
+                        length: min(capturedRange.length, self.storage.length - capturedRange.location)
+                    )
+                    let paragraphRange = (self.string as NSString).paragraphRange(for: safeRange)
+                    self.isApplyingHighlight = true
+                    self.beginEditing()
+                    self.applyHighlighting(in: paragraphRange)
+                    self.edited(.editedAttributes, range: paragraphRange, changeInLength: 0)
+                    self.endEditing()
+                    self.isApplyingHighlight = false
+                }
+            }
         }
         super.processEditing()
     }
@@ -358,10 +396,12 @@ final class MarkdownTextStorage: NSTextStorage {
     func rehighlight() {
         guard storage.length > 0 else { return }
         let fullRange = NSRange(location: 0, length: storage.length)
+        isApplyingHighlight = true
         beginEditing()
         applyHighlighting(in: fullRange)
         edited(.editedAttributes, range: fullRange, changeInLength: 0)
-        endEditing()
+        endEditing()  // → processEditing が呼ばれるが isApplyingHighlight=true でガード
+        isApplyingHighlight = false
     }
 
     // MARK: - Highlighting
@@ -369,8 +409,8 @@ final class MarkdownTextStorage: NSTextStorage {
     private func applyHighlighting(in range: NSRange) {
         guard range.location + range.length <= storage.length, range.length > 0 else { return }
 
-        // ベーススタイルにリセット
-        storage.setAttributes(baseAttrs(), range: range)
+        // ベーススタイルにリセット（self経由でレイアウトマネージャーに通知）
+        self.setAttributes(baseAttrs(), range: range)
 
         // 行ごとのハイライト（enumerateSubstrings は同期実行なので循環参照なし）
         (string as NSString).enumerateSubstrings(in: range, options: [.byLines, .substringNotRequired]) { [self] _, lineRange, _, _ in
@@ -387,31 +427,31 @@ final class MarkdownTextStorage: NSTextStorage {
 
         if line.hasPrefix("# ") {
             let font = NSFont.systemFont(ofSize: editorFont.pointSize * 1.6, weight: .bold)
-            storage.addAttributes([.font: font], range: range)
+            self.addAttributes([.font: font], range: range)
             dimRange(in: range, length: 2)
         } else if line.hasPrefix("## ") {
             let font = NSFont.systemFont(ofSize: editorFont.pointSize * 1.35, weight: .bold)
-            storage.addAttributes([.font: font], range: range)
+            self.addAttributes([.font: font], range: range)
             dimRange(in: range, length: 3)
         } else if line.hasPrefix("### ") {
             let font = NSFont.systemFont(ofSize: editorFont.pointSize * 1.15, weight: .semibold)
-            storage.addAttributes([.font: font], range: range)
+            self.addAttributes([.font: font], range: range)
             dimRange(in: range, length: 4)
         } else if line.hasPrefix("> ") {
-            storage.addAttributes([
+            self.addAttributes([
                 .foregroundColor: NSColor.secondaryLabelColor,
                 .font: italicFont(editorFont.pointSize)
             ], range: range)
         } else if line.hasPrefix("- ") || line.hasPrefix("* ") || line.hasPrefix("+ ") {
             let markerLen = min(2, range.length)
-            storage.addAttribute(.foregroundColor, value: NSColor.systemBlue,
-                                 range: NSRange(location: range.location, length: markerLen))
+            self.addAttribute(.foregroundColor, value: NSColor.systemBlue,
+                              range: NSRange(location: range.location, length: markerLen))
         } else if line.hasPrefix("```") {
-            storage.addAttribute(.foregroundColor, value: NSColor.systemGreen, range: range)
+            self.addAttribute(.foregroundColor, value: NSColor.systemGreen, range: range)
         } else {
             let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmed == "---" || trimmed == "***" || trimmed == "___" {
-                storage.addAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, range: range)
+                self.addAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, range: range)
             }
         }
     }
@@ -454,13 +494,13 @@ final class MarkdownTextStorage: NSTextStorage {
         for match in matches {
             let absRange = NSRange(location: range.location + match.range.location, length: match.range.length)
             guard absRange.location + absRange.length <= storage.length else { continue }
-            storage.addAttributes(attrs, range: absRange)
+            self.addAttributes(attrs, range: absRange)
         }
     }
 
     private func dimRange(in lineRange: NSRange, length: Int) {
         let markerRange = NSRange(location: lineRange.location, length: min(length, lineRange.length))
-        storage.addAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, range: markerRange)
+        self.addAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, range: markerRange)
     }
 
     private func baseAttrs() -> [NSAttributedString.Key: Any] {
@@ -476,7 +516,8 @@ final class MarkdownTextStorage: NSTextStorage {
 }
 
 extension Notification.Name {
-    static let ntSaveDocument = Notification.Name("nTabula.saveDocument")
-    static let ntFocusEditor  = Notification.Name("nTabula.focusEditor")
-    static let ntSwitchTab    = Notification.Name("nTabula.switchTab")
+    static let ntSaveDocument       = Notification.Name("nTabula.saveDocument")
+    static let ntFocusEditor        = Notification.Name("nTabula.focusEditor")
+    static let ntSwitchTab          = Notification.Name("nTabula.switchTab")
+    static let ntHotKeyPresetChanged = Notification.Name("nTabula.hotKeyPresetChanged")
 }
