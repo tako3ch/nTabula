@@ -3,16 +3,13 @@ import AppKit
 import Sparkle
 
 struct SettingsView: View {
+    let updater: SPUUpdater
     @Environment(AppState.self) private var appState
     @State private var tokenInput: String = ""
     @State private var isLoadingDBs = false
     @State private var isLoadingPages = false
     @State private var dbError: String? = nil
     @State private var pagesError: String? = nil
-
-    private var updater: SPUUpdater {
-        (NSApp.delegate as! AppDelegate).updaterController.updater
-    }
 
     var body: some View {
         @Bindable var state = appState

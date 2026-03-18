@@ -110,7 +110,7 @@ struct nTabulaApp: App {
 
         // 設定ウィンドウ
         Settings {
-            SettingsView()
+            SettingsView(updater: appDelegate.updaterController.updater)
                 .environment(appState)
         }
     }
