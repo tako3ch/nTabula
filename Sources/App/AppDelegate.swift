@@ -77,13 +77,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     // MARK: - NSWindowDelegate（フレーム保存）
 
+    private var frameTimer: Timer?
+
     func windowDidResize(_ notification: Notification) {
-        guard let window = notification.object as? NSWindow else { return }
-        PersistenceManager.shared.saveWindowFrame(window.frame)
+        scheduleFrameSave(notification)
     }
 
     func windowDidMove(_ notification: Notification) {
+        scheduleFrameSave(notification)
+    }
+
+    private func scheduleFrameSave(_ notification: Notification) {
         guard let window = notification.object as? NSWindow else { return }
-        PersistenceManager.shared.saveWindowFrame(window.frame)
+        frameTimer?.invalidate()
+        frameTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+            PersistenceManager.shared.saveWindowFrame(window.frame)
+        }
     }
 }

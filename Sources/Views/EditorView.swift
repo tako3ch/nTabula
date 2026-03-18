@@ -515,9 +515,3 @@ final class MarkdownTextStorage: NSTextStorage {
     }
 }
 
-extension Notification.Name {
-    static let ntSaveDocument       = Notification.Name("nTabula.saveDocument")
-    static let ntFocusEditor        = Notification.Name("nTabula.focusEditor")
-    static let ntSwitchTab          = Notification.Name("nTabula.switchTab")
-    static let ntHotKeyPresetChanged = Notification.Name("nTabula.hotKeyPresetChanged")
-}
