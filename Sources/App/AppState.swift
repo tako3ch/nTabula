@@ -84,9 +84,14 @@ final class AppState {
         }
     }
 
-    /// ピン留めタブを先頭にしたソート済みリスト
+    /// ピン留めタブを先頭にしたソート済みリスト（単一パス）
     var sortedTabs: [TabItem] {
-        tabs.filter(\.isPinned) + tabs.filter({ !$0.isPinned })
+        var pinned: [TabItem] = []
+        var unpinned: [TabItem] = []
+        for tab in tabs {
+            if tab.isPinned { pinned.append(tab) } else { unpinned.append(tab) }
+        }
+        return pinned + unpinned
     }
 
     // MARK: - Tab Management
